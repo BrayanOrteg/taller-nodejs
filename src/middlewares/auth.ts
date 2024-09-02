@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, {TokenExpiredError} from "jsonwebtoken";
 
+
 const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         let token = req.headers.authorization;
@@ -10,11 +11,12 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
         }else{
             token = token.replace("Bearer ", "")
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "secret");
-            req.body.loggedUser = decoded;
-            req.params.id = decoded.user_id;
+            req.body.loggedUser = decoded.role;
+
+            req.body.idUser = decoded.user_id;
             next();
         }
-        
+
     } catch (error) {
         if(error instanceof TokenExpiredError)
             res.status(401).json({message:"Token Expired", error})
@@ -24,3 +26,5 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 export default auth;
+
+

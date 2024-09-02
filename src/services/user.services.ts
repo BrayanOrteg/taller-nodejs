@@ -76,16 +76,20 @@ class UserService{
 
         try{
 
+
             const userExists = await this.findByEmail(userInput.email);
 
             if(!userExists)
                 throw new NotAuthorizedError("Not authorized");
             const isMathc:boolean = await bcrypt.compare(userInput.password, userExists.password)
 
+
             if(!isMathc)
                 throw new NotAuthorizedError("Not authorized");
 
             const token = this.generateToken(userExists);
+
+            console.log(userExists)
 
             return {email: userExists.email, name: userExists.name, token};
 
@@ -129,7 +133,7 @@ class UserService{
 
     private generateToken (user:UserDocument): string {
         try {
-            return jwt.sign({user_id: user.id, email: user.email, name: user.name}, process.env.JWT_SECRET || "secret", {expiresIn:"5m"});
+            return jwt.sign({user_id: user.id, email: user.email, name: user.name, role: user.role}, process.env.JWT_SECRET || "secret", {expiresIn:"60m"});
         } catch (error) {
             throw error;
         }

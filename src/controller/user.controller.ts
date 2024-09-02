@@ -31,12 +31,13 @@ class UserController{
 
             const user: UserDocument | null = await userServices.update(req.params.id, req.body as UserInput);
 
+
             if (!user){
                 
                 res.status(404).json({error: "not found", message: `User with id ${req.params.id} not found`})
                 return;
             }
-            
+
             res.json(user); 
 
         }catch(error){
@@ -86,17 +87,16 @@ class UserController{
             res.status(500).json(error)
         }
 
-        //res.send('Get user');
+
     }
 
     public async delete (req: Request, res: Response) {
 
         try{
 
-            const user: UserDocument | null = await userServices.update(req.params.id, req.body as UserInput);
+            const user: UserDocument | null = await userServices.delete(req.params.id, req.body as UserInput);
 
             if (!user){
-                
                 res.status(404).json({error: "not found", message: `User with id ${req.params.id} not found`})
                 return;
             }
@@ -107,7 +107,7 @@ class UserController{
             res.status(500).json(error)
         }
 
-        //res.send('Delete user');
+
     }
 
     public async login (req: Request, res: Response) {
@@ -115,11 +115,11 @@ class UserController{
         try{
                 
             const userObj = await userServices.login(req.body);
-            res.status(201).json(userObj);    
+            res.status(201).json(userObj);
 
         }catch(error){
             if (error instanceof NotAuthorizedError)
-                res.status(404).json({ message: "user already exists"})
+                res.status(404).json({ message: "Invalid credentials"})
             res.status(500).json(error)
         }
     }
